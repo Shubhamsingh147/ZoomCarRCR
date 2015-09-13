@@ -4,6 +4,7 @@ package com.example.shubham.zoomcar.adapter;
  * Created by shubham on 13/9/15.
  */
 
+import com.example.shubham.zoomcar.MapActivity;
 import com.example.shubham.zoomcar.R;
 import com.example.shubham.zoomcar.app.AppController;
 import com.example.shubham.zoomcar.model.Car;
@@ -12,34 +13,38 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
-public class CustomListAdapter extends BaseAdapter {
+public class CustomListAdapter extends BaseAdapter{
     private Activity activity;
     private LayoutInflater inflater;
-    private List<Car> movieItems;
+    private List<Car> carItems;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public CustomListAdapter(Activity activity, List<Car> movieItems) {
         this.activity = activity;
-        this.movieItems = movieItems;
+        this.carItems = movieItems;
     }
 
     @Override
     public int getCount() {
-        return movieItems.size();
+        return carItems.size();
     }
 
     @Override
     public Object getItem(int location) {
-        return movieItems.get(location);
+        return carItems.get(location);
     }
 
     @Override
@@ -62,11 +67,29 @@ public class CustomListAdapter extends BaseAdapter {
                 .findViewById(R.id.thumbnail);
         TextView title = (TextView) convertView.findViewById(R.id.title);
         TextView rating = (TextView) convertView.findViewById(R.id.rating);
-        TextView genre = (TextView) convertView.findViewById(R.id.price);
-        TextView year = (TextView) convertView.findViewById(R.id.seaterAC);
+        TextView price = (TextView) convertView.findViewById(R.id.price);
+        TextView seaterAC = (TextView) convertView.findViewById(R.id.seaterAC);
+        ImageButton showLocation = (ImageButton) convertView.findViewById(R.id.mapButton);
+        // getting car data for the row
+        final Car m = carItems.get(position);
+        showLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("name",m.getTitle());
+                bundle.putString("rating",m.getRating());
+                bundle.putInt("price",m.getPrice());
+                bundle.putInt("seater",m.getSeater());
+                bundle.putInt("AC",m.getAC());
+                bundle.putFloat("latitude",m.getLatitude());
+                bundle.putFloat("longitude",m.getLongitude());
+                bundle.putString("imageURL", m.getThumbnailUrl());
+                Intent intent = new Intent(activity.getApplicationContext(),MapActivity.class);
+                intent.putExtra("carData",bundle);
+                activity.startActivity(intent);
+            }
+        });
 
-        // getting movie data for the row
-        Car m = movieItems.get(position);
 
         // thumbnail image
         thumbNail.setImageUrl(m.getThumbnailUrl(), imageLoader);
@@ -79,13 +102,13 @@ public class CustomListAdapter extends BaseAdapter {
 
         // hourly_rate
 
-        genre.setText("₹" + String.valueOf(m.getPrice()) + "/ hour");
+        price.setText("₹" + String.valueOf(m.getPrice()) + "/ hour");
 
         //AC
         if(m.getAC() == 1)
-            year.setText(m.getSeater() + "-seater/AC");
+            seaterAC.setText(m.getSeater() + "-seater/AC");
         else
-            year.setText(m.getSeater() + "-seater/NO-AC");
+            seaterAC.setText(m.getSeater() + "-seater/NO-AC");
 
         return convertView;
     }
