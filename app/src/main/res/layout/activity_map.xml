@@ -156,6 +156,7 @@
                 android:onClick="onClick"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
                 android:textColor="@android:color/white"
                 android:background="#58cf6e"/>
             <Button
@@ -167,6 +168,7 @@
                 android:onClick="onClick"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
                 android:text="Booking History"
                 android:textColor="@android:color/white"
                 android:background="#ef6c6c"/>

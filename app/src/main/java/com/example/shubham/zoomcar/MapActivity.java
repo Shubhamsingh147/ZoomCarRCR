@@ -2,8 +2,10 @@ package com.example.shubham.zoomcar;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -24,6 +26,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,7 +39,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private float latitude, longitude;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     private static final String TIME_PATTERN = "HH:mm";
-
+    String appName = "ZoomCar";
+    File fileBackupDir = new File(Environment.getExternalStorageDirectory(), appName + "/backup");
     private TextView lblDate;
     private TextView lblTime;
     private Calendar calendar;
@@ -110,9 +116,32 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
                 break;
             case R.id.bookButton:
+                String currentTime = lblTime.getText().toString()+" on "+lblDate.getText().toString();
+                File fileBackupDir = new File(Environment.getExternalStorageDirectory(), appName + "/backup");
+                if (!fileBackupDir.exists()) {
+                    fileBackupDir.mkdirs();
+                }
+                File file = new File(fileBackupDir, "history.txt");
+                   try {
+                    if (!file.exists())
+                        file.createNewFile();
+                    String saveString = input.getString("name")+" @"+input.getInt("price")+"/hr, with rating "+input.getString("rating")+" at "+currentTime+"\n";
+                    byte[] bytes = saveString.getBytes("UTF-8");
+                    // open in append mode
+                    FileOutputStream outputStream = new FileOutputStream(file, true);
+                       outputStream.write(bytes);
+                       outputStream.close();
+                    Log.v("Saved", "file(s) written successfully");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 Toast.makeText(this,"I have interned in PayU so I can easily handle the payment gateway part, I wish you'd have given the API access to payments too :(",Toast.LENGTH_LONG).show();
+                Intent inten = new Intent(this,History.class);
+                startActivity(inten);
                 break;
             case R.id.historyButton:
+                Intent intent = new Intent(this,History.class);
+                startActivity(intent);
                 Toast.makeText(this,"Sorry, this feature is paid. To avail this feature, HIRE ME in no less than 20L, Just kiddin! :P",Toast.LENGTH_LONG).show();
                 break;
             case R.id.smsButton:
