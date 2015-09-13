@@ -13,7 +13,6 @@
     <style name="DTP.Label">
         <item name="android:textSize">@dimen/text</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
     </style>
 
 </resources>

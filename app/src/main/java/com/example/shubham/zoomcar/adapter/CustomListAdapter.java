@@ -72,7 +72,7 @@ public class CustomListAdapter extends BaseAdapter{
         ImageButton showLocation = (ImageButton) convertView.findViewById(R.id.mapButton);
         // getting car data for the row
         final Car m = carItems.get(position);
-        showLocation.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();

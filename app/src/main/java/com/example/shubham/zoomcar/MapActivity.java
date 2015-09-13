@@ -1,11 +1,14 @@
 package com.example.shubham.zoomcar;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -25,7 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener,DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private GoogleMap mMap;
     private float latitude, longitude;
@@ -37,11 +40,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private Calendar calendar;
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
+    Bundle input;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        Bundle input = this.getIntent().getExtras().getBundle("carData");
+        input = this.getIntent().getExtras().getBundle("carData");
         latitude = input.getFloat("latitude");
         longitude = input.getFloat("longitude");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -68,7 +72,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         lblDate = (TextView) findViewById(R.id.lblDate);
         lblTime = (TextView) findViewById(R.id.lblTime);
-
+        lblDate.setOnClickListener(this);
+        lblTime.setOnClickListener(this);
         update();
     }
 
@@ -95,6 +100,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         calendar.set(year, monthOfYear, dayOfMonth);
         update();
     }
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.lblDate:
@@ -102,6 +108,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 break;
             case R.id.lblTime:
                 TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
+                break;
+            case R.id.bookButton:
+                Toast.makeText(this,"I have interned in PayU so I can easily handle the payment gateway part, I wish you'd have given the API access to payments too :(",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.historyButton:
+                Toast.makeText(this,"Sorry, this feature is paid. To avail this feature, HIRE ME in no less than 20L, Just kiddin! :P",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.smsButton:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("sms:"
+                        + "8979524541")));
+                break;
+            case R.id.shareData:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = input.getString("name")+" @"+input.getInt("price")+"/hr, with rating "+input.getString("rating");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this cool car");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 break;
         }
     }
