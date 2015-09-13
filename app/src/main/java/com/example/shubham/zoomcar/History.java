@@ -28,6 +28,9 @@ public class History extends Activity {
         try {
             if (!fileBackupDir.exists()) {
                 fileBackupDir.mkdirs();
+                TextView tv = (TextView) findViewById(R.id.tv);
+                tv.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
             }
             File file = new File(fileBackupDir, "history.txt");
             if(!file.exists()) {
@@ -37,6 +40,7 @@ public class History extends Activity {
                 listView.setVisibility(View.GONE);
             }
             else {
+                listView.setVisibility(View.VISIBLE);
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                 String line = "";
                 int i = 0;
@@ -45,7 +49,7 @@ public class History extends Activity {
                     values.add(line);
                     i++;
                 }
-                if (values == null) {
+                if (values.size() == 0) {
                     TextView tv = (TextView) findViewById(R.id.tv);
                     tv.setVisibility(View.VISIBLE);
                     listView.setVisibility(View.GONE);

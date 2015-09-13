@@ -1,6 +1,7 @@
 package com.example.shubham.zoomcar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -81,6 +83,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, response.toString());
+                        listView.setVisibility(View.VISIBLE);
                         hidePDialog();
                         try {
                             JSONArray carArray = response.getJSONArray("cars");
@@ -114,6 +117,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
+                TextView tvError = (TextView)findViewById(R.id.tvError);
+                tvError.setVisibility(View.VISIBLE);
+                Button historyButton = (Button)findViewById(R.id.historyBtn);
+                historyButton.setVisibility(View.VISIBLE);
+                historyButton.setOnClickListener(MainActivity.this);
+                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.footer);
+                linearLayout.setVisibility(View.GONE);
+                listView.setVisibility(View.GONE);
                 hidePDialog();
             }
         });
@@ -188,6 +199,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 }
             });
             adapter.notifyDataSetChanged();
+        }
+        else if(id == R.id.historyBtn){
+            Intent intent = new Intent(this,History.class);
+            startActivity(intent);
         }
     }
 
